@@ -569,7 +569,10 @@ export const getUIStateFromAIState = (aiState: Chat) => {
             ) : null
           })
         ) : message.role === 'user' ? (
-          <UserMessage>{message.content.replace(/\|\|\|[\s\S]*?\|\|\|/g, '')}</UserMessage>
+          <UserMessage>{
+            typeof message.content === 'string' 
+          ? message.content.replace(/\|\|\|[\s\S]*?\|\|\|/g, '') 
+          : ''}</UserMessage>
         ) : message.role === 'assistant' &&
           typeof message.content === 'string' ? (
           <BotMessage content={message.content} />
