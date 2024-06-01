@@ -14,7 +14,6 @@ export function FooterText({ className, ...props }: React.ComponentProps<'p'>) {
     >
       Made with ❤️ in colab with {' '}
       <ExternalLink href="https://www.extia-group.com/es-en">Extia</ExternalLink> 
-      .
     </p>
   )
 }

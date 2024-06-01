@@ -121,7 +121,7 @@ async function submitUserMessage(content: string, fileContent: string) {
       {
         id: nanoid(),
         role: 'user',
-        content: (fileContent == "") ? `${content}` : `${content} \n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n||||CONTENT OF FILE: ${fileContent} |||`,
+        content: (fileContent == "") ? `${content}` : `${content} ||||CONTENT OF FILE: ${fileContent} |||`,
       }
     ]
   })
