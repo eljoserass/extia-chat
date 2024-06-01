@@ -64,7 +64,7 @@ export function Header() {
       <div className="flex items-center justify-end space-x-2">
         <a target="_blank" href="https://www.extia-group.com/es-en">
           <Image
-            src="/images.png"
+            src="/extia.svg"
             alt="extia-logo"
             width={50}
             height={30}
