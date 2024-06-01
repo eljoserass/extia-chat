@@ -25,6 +25,7 @@ import { Events } from '@/components/stocks/events'
 import { StocksSkeleton } from '@/components/stocks/stocks-skeleton'
 import { Stocks } from '@/components/stocks/stocks'
 import { StockSkeleton } from '@/components/stocks/stock-skeleton'
+import * as React from 'react'
 import {
   formatNumber,
   runAsyncFnWithoutBlocking,
@@ -40,6 +41,7 @@ async function confirmPurchase(symbol: string, price: number, amount: number) {
   'use server'
 
   const aiState = getMutableAIState<typeof AI>()
+
 
   const purchasing = createStreamableUI(
     <div className="inline-flex items-start gap-1 md:items-center">
@@ -106,10 +108,11 @@ async function confirmPurchase(symbol: string, price: number, amount: number) {
   }
 }
 
-async function submitUserMessage(content: FormData) {
+async function submitUserMessage(content: string, fileContent: string) {
   'use server'
 
   const aiState = getMutableAIState<typeof AI>()
+  
 
   aiState.update({
     ...aiState.get(),
@@ -118,7 +121,7 @@ async function submitUserMessage(content: FormData) {
       {
         id: nanoid(),
         role: 'user',
-        content
+        content: (fileContent == "") ? `${content}` : `${content} ||||CONTENT OF FILE: ${fileContent} |||`,
       }
     ]
   })
@@ -566,7 +569,7 @@ export const getUIStateFromAIState = (aiState: Chat) => {
             ) : null
           })
         ) : message.role === 'user' ? (
-          <UserMessage>{message.content as string}</UserMessage>
+          <UserMessage>{message.content.replace(/\|\|\|[\s\S]*?\|\|\|/g, '')}</UserMessage>
         ) : message.role === 'assistant' &&
           typeof message.content === 'string' ? (
           <BotMessage content={message.content} />
