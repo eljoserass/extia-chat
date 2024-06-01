@@ -4,6 +4,7 @@ import { cn } from '@/lib/utils'
 import { ChatList } from '@/components/chat-list'
 import { ChatPanel } from '@/components/chat-panel'
 import { EmptyScreen } from '@/components/empty-screen'
+import { PdfViewer } from './pdf-viewer'
 import { useLocalStorage } from '@/lib/hooks/use-local-storage'
 import { useEffect, useState } from 'react'
 import { useUIState, useAIState } from 'ai/rsc'
@@ -11,7 +12,6 @@ import { Message, Session } from '@/lib/types'
 import { usePathname, useRouter } from 'next/navigation'
 import { useScrollAnchor } from '@/lib/hooks/use-scroll-anchor'
 import { toast } from 'sonner'
-
 export interface ChatProps extends React.ComponentProps<'div'> {
   initialMessages?: Message[]
   id?: string
@@ -23,6 +23,7 @@ export function Chat({ id, className, session, missingKeys }: ChatProps) {
   const router = useRouter()
   const path = usePathname()
   const [input, setInput] = useState('')
+  const [file, setFile] = useState<File | undefined>(undefined)
   const [messages] = useUIState()
   const [aiState] = useAIState()
 
@@ -65,10 +66,25 @@ export function Chat({ id, className, session, missingKeys }: ChatProps) {
         className={cn('pb-[200px] pt-4 md:pt-10', className)}
         ref={messagesRef}
       >
-        {messages.length ? (
-          <ChatList messages={messages} isShared={false} session={session} />
+        {!file ? (
+          messages.length ? (
+            <ChatList messages={messages} isShared={false} session={session} />
+          ) : (
+            <EmptyScreen />
+          )
         ) : (
-          <EmptyScreen />
+          <div className="flex flex-row justify-center ml-72 2xl:ml-96">
+            {messages.length ? (
+              <ChatList
+                messages={messages}
+                isShared={false}
+                session={session}
+              />
+            ) : (
+              <EmptyScreen />
+            )}
+            {file && <PdfViewer file={file} />}
+          </div>
         )}
         <div className="w-full h-px" ref={visibilityRef} />
       </div>
@@ -76,6 +92,8 @@ export function Chat({ id, className, session, missingKeys }: ChatProps) {
         id={id}
         input={input}
         setInput={setInput}
+        file={file}
+        setFile={setFile}
         isAtBottom={isAtBottom}
         scrollToBottom={scrollToBottom}
       />

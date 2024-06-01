@@ -4,7 +4,7 @@ import * as React from 'react'
 import Textarea from 'react-textarea-autosize'
 
 import { useActions, useUIState } from 'ai/rsc'
-
+// import * as pdfjsLib from 'pdfjs-dist'
 import { UserMessage } from './stocks/message'
 import { type AI } from '@/lib/chat/actions'
 import { Button } from '@/components/ui/button'
@@ -17,25 +17,56 @@ import {
 import { useEnterSubmit } from '@/lib/hooks/use-enter-submit'
 import { nanoid } from 'nanoid'
 import { useRouter } from 'next/navigation'
+// import pdfjsLib from "../pdf-worker-loader"
+import pdfToText from 'react-pdftotext'
+
+
 
 export function PromptForm({
   input,
-  setInput
+  setInput,
+  file,
+  setFile
 }: {
   input: string
   setInput: (value: string) => void
+  file: File | undefined
+  setFile: (file: File | undefined) => void
 }) {
   const router = useRouter()
   const { formRef, onKeyDown } = useEnterSubmit()
   const inputRef = React.useRef<HTMLTextAreaElement>(null)
+  const fileInputRef = React.useRef<HTMLInputElement | null>(null)
   const { submitUserMessage } = useActions()
   const [_, setMessages] = useUIState<typeof AI>()
+  const [fileContent, setFileContent] = React.useState<string>('')
 
   React.useEffect(() => {
     if (inputRef.current) {
       inputRef.current.focus()
     }
   }, [])
+
+  const handleFileChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    if (event.target.files?.length) {
+      
+      setFile(event.target.files[0])
+    }
+    
+    const file_pdf = event.target.files?.[0]
+    if (file_pdf && file_pdf.type === 'application/pdf') {
+      pdfToText(file_pdf)
+            .then(text => setFileContent(text))
+            .catch(error => console.error("Failed to extract text from pdf"))
+    }
+  }
+
+  const handleFileOnClick = () => {
+    if (fileInputRef.current) {
+      fileInputRef.current.click()
+    }
+  }
+
 
   return (
     <form
@@ -60,10 +91,17 @@ export function PromptForm({
             display: <UserMessage>{value}</UserMessage>
           }
         ])
+        const formData = new FormData()
+
+        formData.append('value', value)
+        formData.append('file', file as Blob)
+
+        setFile(undefined)
 
         // Submit and get response message
-        const responseMessage = await submitUserMessage(value)
+        const responseMessage = await submitUserMessage(value, fileContent)
         setMessages(currentMessages => [...currentMessages, responseMessage])
+        setFileContent('')
       }}
     >
       <div className="relative flex max-h-60 w-full grow flex-col overflow-hidden bg-background px-8 sm:rounded-md sm:border sm:px-12">
@@ -71,24 +109,31 @@ export function PromptForm({
           <TooltipTrigger asChild>
             <Button
               variant="outline"
-              size="icon"
-              className="absolute left-0 top-[14px] size-8 rounded-full bg-background p-0 sm:left-4"
-              onClick={() => {
-                router.push('/new')
-              }}
+              className="absolute left-0 top-[14px] size-8 w-20 bg-background p-0 sm:left-4"
+              onClick={handleFileOnClick}
+              // onClick={() => {
+              //   router.push('/new')
+              // }}
             >
-              <IconPlus />
-              <span className="sr-only">New Chat</span>
+              <input
+                ref={fileInputRef}
+                type="file"
+                className="sr-only"
+                onChange={handleFileChange}
+              />
+              <span className="flex overflow-hidden text-ellipsis px-1 max-w-16">
+                {file ? file.name : 'Add file'}
+              </span>
             </Button>
           </TooltipTrigger>
-          <TooltipContent>New Chat</TooltipContent>
+          <TooltipContent>Add file</TooltipContent>
         </Tooltip>
         <Textarea
           ref={inputRef}
           tabIndex={0}
           onKeyDown={onKeyDown}
           placeholder="Send a message."
-          className="min-h-[60px] w-full resize-none bg-transparent px-4 py-[1.3rem] focus-within:outline-none sm:text-sm"
+          className="min-h-[60px] w-full resize-none bg-transparent px-16 py-[1.3rem] focus-within:outline-none sm:text-sm"
           autoFocus
           spellCheck={false}
           autoComplete="off"
