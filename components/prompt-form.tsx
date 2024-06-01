@@ -4,7 +4,7 @@ import * as React from 'react'
 import Textarea from 'react-textarea-autosize'
 
 import { useActions, useUIState } from 'ai/rsc'
-
+// import * as pdfjsLib from 'pdfjs-dist'
 import { UserMessage } from './stocks/message'
 import { type AI } from '@/lib/chat/actions'
 import { Button } from '@/components/ui/button'
@@ -17,6 +17,10 @@ import {
 import { useEnterSubmit } from '@/lib/hooks/use-enter-submit'
 import { nanoid } from 'nanoid'
 import { useRouter } from 'next/navigation'
+// import pdfjsLib from "../pdf-worker-loader"
+import pdfToText from 'react-pdftotext'
+
+
 
 export function PromptForm({
   input,
@@ -32,6 +36,7 @@ export function PromptForm({
   const [file, setFile] = React.useState<File | undefined>(undefined)
   const { submitUserMessage } = useActions()
   const [_, setMessages] = useUIState<typeof AI>()
+  const [fileContent, setFileContent] = React.useState<string>('')
 
   React.useEffect(() => {
     if (inputRef.current) {
@@ -39,9 +44,17 @@ export function PromptForm({
     }
   }, [])
 
-  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files?.length) {
+      
       setFile(event.target.files[0])
+    }
+    
+    const file_pdf = event.target.files?.[0]
+    if (file_pdf && file_pdf.type === 'application/pdf') {
+      pdfToText(file_pdf)
+            .then(text => setFileContent(text))
+            .catch(error => console.error("Failed to extract text from pdf"))
     }
   }
 
@@ -50,6 +63,7 @@ export function PromptForm({
       fileInputRef.current.click()
     }
   }
+
 
   return (
     <form
@@ -82,8 +96,9 @@ export function PromptForm({
         setFile(undefined)
 
         // Submit and get response message
-        const responseMessage = await submitUserMessage(formData)
+        const responseMessage = await submitUserMessage(value, fileContent)
         setMessages(currentMessages => [...currentMessages, responseMessage])
+        setFileContent('')
       }}
     >
       <div className="relative flex max-h-60 w-full grow flex-col overflow-hidden bg-background px-8 sm:rounded-md sm:border sm:px-12">
