@@ -28,6 +28,8 @@ export function PromptForm({
   const router = useRouter()
   const { formRef, onKeyDown } = useEnterSubmit()
   const inputRef = React.useRef<HTMLTextAreaElement>(null)
+  const fileInputRef = React.useRef<HTMLInputElement | null>(null)
+  const [file, setFile] = React.useState<File | undefined>(undefined)
   const { submitUserMessage } = useActions()
   const [_, setMessages] = useUIState<typeof AI>()
 
@@ -36,6 +38,18 @@ export function PromptForm({
       inputRef.current.focus()
     }
   }, [])
+
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    if (event.target.files?.length) {
+      setFile(event.target.files[0])
+    }
+  }
+
+  const handleFileOnClick = () => {
+    if (fileInputRef.current) {
+      fileInputRef.current.click()
+    }
+  }
 
   return (
     <form
@@ -60,9 +74,15 @@ export function PromptForm({
             display: <UserMessage>{value}</UserMessage>
           }
         ])
+        const formData = new FormData()
+
+        formData.append('value', value)
+        formData.append('file', file as Blob)
+
+        setFile(undefined)
 
         // Submit and get response message
-        const responseMessage = await submitUserMessage(value)
+        const responseMessage = await submitUserMessage(formData)
         setMessages(currentMessages => [...currentMessages, responseMessage])
       }}
     >
@@ -71,24 +91,31 @@ export function PromptForm({
           <TooltipTrigger asChild>
             <Button
               variant="outline"
-              size="icon"
-              className="absolute left-0 top-[14px] size-8 rounded-full bg-background p-0 sm:left-4"
-              onClick={() => {
-                router.push('/new')
-              }}
+              className="absolute left-0 top-[14px] size-8 w-20 bg-background p-0 sm:left-4"
+              onClick={handleFileOnClick}
+              // onClick={() => {
+              //   router.push('/new')
+              // }}
             >
-              <IconPlus />
-              <span className="sr-only">New Chat</span>
+              <input
+                ref={fileInputRef}
+                type="file"
+                className="sr-only"
+                onChange={handleFileChange}
+              />
+              <span className="flex overflow-hidden text-ellipsis px-1 max-w-16">
+                {file ? file.name : 'Add file'}
+              </span>
             </Button>
           </TooltipTrigger>
-          <TooltipContent>New Chat</TooltipContent>
+          <TooltipContent>Add file</TooltipContent>
         </Tooltip>
         <Textarea
           ref={inputRef}
           tabIndex={0}
           onKeyDown={onKeyDown}
           placeholder="Send a message."
-          className="min-h-[60px] w-full resize-none bg-transparent px-4 py-[1.3rem] focus-within:outline-none sm:text-sm"
+          className="min-h-[60px] w-full resize-none bg-transparent px-16 py-[1.3rem] focus-within:outline-none sm:text-sm"
           autoFocus
           spellCheck={false}
           autoComplete="off"
