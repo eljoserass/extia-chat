@@ -7,7 +7,7 @@ import Image from 'next/image'
 
 export function EmptyScreen() {
   return (
-    <div className="mx-auto max-w-2xl px-4">
+    <div className="mx-auto max-w-2xl">
       <div className="flex flex-row items-center gap-6 rounded-lg border bg-background p-8">
         <Image
           src={

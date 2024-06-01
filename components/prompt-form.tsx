@@ -20,16 +20,19 @@ import { useRouter } from 'next/navigation'
 
 export function PromptForm({
   input,
-  setInput
+  setInput,
+  file,
+  setFile
 }: {
   input: string
   setInput: (value: string) => void
+  file: File | undefined
+  setFile: (file: File | undefined) => void
 }) {
   const router = useRouter()
   const { formRef, onKeyDown } = useEnterSubmit()
   const inputRef = React.useRef<HTMLTextAreaElement>(null)
   const fileInputRef = React.useRef<HTMLInputElement | null>(null)
-  const [file, setFile] = React.useState<File | undefined>(undefined)
   const { submitUserMessage } = useActions()
   const [_, setMessages] = useUIState<typeof AI>()
 
