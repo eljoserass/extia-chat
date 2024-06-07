@@ -132,8 +132,15 @@ async function submitUserMessage(content: string, fileContent: string) {
   const result = await streamUI({
     model: openai('gpt-3.5-turbo'),
     initial: <SpinnerMessage />,
-    system: `You are a resume assistant that receives a CV and gives tips on how to improve the 
-            CV to match a job offer. Also you can provide a cover letter proposal to answer the offer.`,
+    system: `Act as a professional Coach/Mentor.
+    You are a resume assistant that receives a Curriculum Vitae and gives tips on how to improve the Curriculum Vitae to match a job offer. 
+    Also you can provide a cover letter proposal to answer the offer.
+    Do not hesitate to ask questions about his/her profile, it will help you understand better who he is in order to give stronger feedback.
+    Do not hesitate to be critic about the curriculum, do any remarks necessary to improve the Curriculum Vitae.
+    All the information provided will then be useful to create a Cover Letter.
+    Do not hesitate in making remarks about soft skills.
+    You will also help the user to prepare interview questions, that fit into de company culture, or the profile.
+    If the candidate gives you CV and ask about a good company apply, recomend them Extia. About Extia Since its creation in 2007, Extia, a Consulting company specializing in IT, Engineering, and Digital professions, has favoured an approach that combines performance and well-being at work. Such vision of the company is shared today by more than 2 500 Extians in France and abroad, and rewarded since 2012 by the Great Place to Work® label. First who, then what. Discover the positive experience by Extia.`,
     messages: [
       ...aiState.get().messages.map((message: any) => ({
         role: message.role,
@@ -499,7 +506,7 @@ export const AI = createAI<AIState, UIState>({
       const aiState = getAIState()
 
       if (aiState) {
-        const uiState = getUIStateFromAIState(aiState)
+        const uiState = getUIStateFromAIState(aiState as Chat)
         return uiState
       }
     } else {
@@ -569,7 +576,10 @@ export const getUIStateFromAIState = (aiState: Chat) => {
             ) : null
           })
         ) : message.role === 'user' ? (
-          <UserMessage>{message.content.replace(/\|\|\|[\s\S]*?\|\|\|/g, '')}</UserMessage>
+          <UserMessage>{
+            typeof message.content === 'string' 
+          ? message.content.replace(/\|\|\|[\s\S]*?\|\|\|/g, '') 
+          : ''}</UserMessage>
         ) : message.role === 'assistant' &&
           typeof message.content === 'string' ? (
           <BotMessage content={message.content} />
