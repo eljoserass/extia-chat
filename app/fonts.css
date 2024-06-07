@@ -1,0 +1,55 @@
+@font-face {
+  font-family: 'GothamRounded';
+  src: url('/fonts/gothamrnd-bold.woff') format('woff');
+  font-weight: bold;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'GothamRounded';
+  src: url('/fonts/gothamrnd-bolditalic.woff') format('woff');
+  font-weight: bold;
+  font-style: italic;
+}
+
+@font-face {
+  font-family: 'GothamRounded';
+  src: url('/fonts/gothamrnd-book.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'GothamRounded';
+  src: url('/fonts/gothamrnd-bookitalic.woff') format('woff');
+  font-weight: normal;
+  font-style: italic;
+}
+
+@font-face {
+  font-family: 'GothamRounded';
+  src: url('/fonts/gothamrnd-light.woff') format('woff');
+  font-weight: light;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'GothamRounded';
+  src: url('/fonts/gothamrnd-lightitalic.woff') format('woff');
+  font-weight: light;
+  font-style: italic;
+}
+
+@font-face {
+  font-family: 'GothamRounded';
+  src: url('/fonts/gothamrnd-medium.woff') format('woff');
+  font-weight: medium;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'GothamRounded';
+  src: url('/fonts/gothamrnd-mediumitalic.woff') format('woff');
+  font-weight: medium;
+  font-style: italic;
+}
