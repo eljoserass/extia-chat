@@ -8,7 +8,7 @@ import Image from 'next/image'
 export function EmptyScreen() {
   return (
     <div className="mx-auto max-w-2xl">
-      <div className="flex flex-row items-center gap-6 rounded-full border bg-background p-6">
+      <div className="flex flex-col md:flex-row items-center gap-6 rounded-xl m-2 sm:rounded-full border bg-background p-6">
         <Image
           src={
             'https://science4us.explorelearning.com/user_area/content_media/raw/s4u-help-brainybot-squinkles.svg'
@@ -16,6 +16,7 @@ export function EmptyScreen() {
           alt="assistant-bot"
           width={180}
           height={208}
+          className="w-20 h-auto md:w-80 md:h-auto"
         />
         <div>
           <h1 className="text-lg font-bold">
