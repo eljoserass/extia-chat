@@ -1,8 +1,5 @@
-import { GeistSans } from 'geist/font/sans'
-import { GeistMono } from 'geist/font/mono'
-
 import '@/app/globals.css'
-import { cn } from '@/lib/utils'
+import '@/app/fonts.css'
 import { TailwindIndicator } from '@/components/tailwind-indicator'
 import { Providers } from '@/components/providers'
 import { Header } from '@/components/header'
@@ -38,13 +35,7 @@ interface RootLayoutProps {
 export default function RootLayout({ children }: RootLayoutProps) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body
-        className={cn(
-          'font-sans antialiased',
-          GeistSans.variable,
-          GeistMono.variable
-        )}
-      >
+      <body>
         <Toaster position="top-center" />
         <Providers
           attribute="class"
@@ -54,9 +45,7 @@ export default function RootLayout({ children }: RootLayoutProps) {
         >
           <div className="flex flex-col min-h-screen">
             <Header />
-            <main className="flex flex-col flex-1 bg-muted/50">
-              {children}
-            </main>
+            <main className="flex flex-col flex-1 bg-muted/20">{children}</main>
           </div>
           <TailwindIndicator />
         </Providers>

@@ -8,7 +8,7 @@ import Image from 'next/image'
 export function EmptyScreen() {
   return (
     <div className="mx-auto max-w-2xl">
-      <div className="flex flex-row items-center gap-6 rounded-lg border bg-background p-8">
+      <div className="flex flex-row items-center gap-6 rounded-full border bg-background p-6">
         <Image
           src={
             'https://science4us.explorelearning.com/user_area/content_media/raw/s4u-help-brainybot-squinkles.svg'
@@ -18,10 +18,10 @@ export function EmptyScreen() {
           height={208}
         />
         <div>
-          <h1 className="text-lg font-semibold">
-            Welcome to Extia AI Chatbot!
+          <h1 className="text-lg font-bold">
+            Welcome to <span className="text-muted">Extia</span> AI Chatbot!
           </h1>
-          <p className="leading-normal text-muted-foreground">
+          <p className="leading-normal">
             Your ultimate job search assistant! Our innovative app is designed
             to help you maximize your career opportunities ensuring you stand
             out to potential employers. We are sponsored by{' '}
