@@ -18,8 +18,13 @@ module.exports = {
     },
     extend: {
       fontFamily: {
-        sans: ['var(--font-geist-sans)'],
-        mono: ['var(--font-geist-mono)']
+        custom: ['GothamRounded', 'sans-serif']
+      },
+      fontWeight: {
+        light: 300,
+        normal: 400,
+        medium: 500,
+        bold: 700
       },
       colors: {
         border: 'hsl(var(--border))',
@@ -40,8 +45,8 @@ module.exports = {
           foreground: 'hsl(var(--destructive-foreground))'
         },
         muted: {
-          DEFAULT: 'rgb(255 237 213)',
-          foreground: 'hsl(var(--muted-foreground))'
+          DEFAULT: '#FC9254',
+          foreground: '#283D47'
         },
         accent: {
           DEFAULT: 'hsl(var(--accent))',
