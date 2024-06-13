@@ -198,7 +198,7 @@ async function submitUserMessage(content: string, fileContent: string) {
 
     //       aiState.done({
     //         ...aiState.get(),
-    //         messages: [
+    //         messages: [  
     //           ...aiState.get().messages,
     //           {
     //             id: nanoid(),

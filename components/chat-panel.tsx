@@ -45,10 +45,10 @@ export function ChatPanel({
       message: `I want to apply to a job offer, can you help me to improve with my CV?`
     },
     {
-      heading: 'I don´t know any job offers yet,',
+      heading: "I don't know any job offers yet,",
       subheading: 'can you help me find some with my CV?',
       message:
-        'I don´t know any job offers yet, can you help me find some with my CV?'
+        "I don't know any job offers yet, can you help me find some with my CV?"
     }
   ]
 
