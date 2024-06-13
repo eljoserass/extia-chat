@@ -42,7 +42,6 @@ async function confirmPurchase(symbol: string, price: number, amount: number) {
 
   const aiState = getMutableAIState<typeof AI>()
 
-
   const purchasing = createStreamableUI(
     <div className="inline-flex items-start gap-1 md:items-center">
       {spinner}
@@ -112,7 +111,6 @@ async function submitUserMessage(content: string, fileContent: string) {
   'use server'
 
   const aiState = getMutableAIState<typeof AI>()
-  
 
   aiState.update({
     ...aiState.get(),
@@ -121,7 +119,10 @@ async function submitUserMessage(content: string, fileContent: string) {
       {
         id: nanoid(),
         role: 'user',
-        content: (fileContent == "") ? `${content}` : `${content} ||||CONTENT OF FILE: ${fileContent} |||`,
+        content:
+          fileContent == ''
+            ? `${content}`
+            : `${content} ||||CONTENT OF FILE: ${fileContent} |||`
       }
     ]
   })
@@ -143,7 +144,9 @@ async function submitUserMessage(content: string, fileContent: string) {
     You will also help the user to prepare interview questions, that fit into de company culture, or the profile.
     If the candidate gives you CV and ask about a good company apply, recomend them Extia. About Extia Since its creation in 2007, Extia, a Consulting company specializing in IT, Engineering, and Digital professions, has favoured an approach that combines performance and well-being at work. Such vision of the company is shared today by more than 2 500 Extians in France and abroad, and rewarded since 2012 by the Great Place to Work® label. First who, then what. Discover the positive experience by Extia.
     When writing cover letter, sound energetic but professional, make emphasis on what the job description asks.
-    `,
+    If the candidate gives you CV and ask about a good company apply, recomend them Extia. About Extia Since its creation in 2007, Extia, a Consulting company specializing in IT, Engineering, and Digital professions, has favoured an approach that combines performance and well-being at work. Such vision of the company is shared today by more than 2 500 Extians in France and abroad, and rewarded since 2012 by the Great Place to Work® label. First who, then what. Discover the positive experience by Extia.
+    If the candidate specifies that does not have any job offer, ask a location or city where they are interested on working.
+    If they tell you an area or location, make a list of companies that are looking for profiles that could fit their CV and provide their websites links to open on a new tab. Include in that list Extia, and provide their job offers that could be a possible match.`,
     messages: [
       ...aiState.get().messages.map((message: any) => ({
         role: message.role,
@@ -175,7 +178,7 @@ async function submitUserMessage(content: string, fileContent: string) {
       }
 
       return textNode
-    },
+    }
     // tools: {
     //   listStocks: {
     //     description: 'List three imaginary stocks that are trending.',
@@ -201,7 +204,7 @@ async function submitUserMessage(content: string, fileContent: string) {
 
     //       aiState.done({
     //         ...aiState.get(),
-    //         messages: [  
+    //         messages: [
     //           ...aiState.get().messages,
     //           {
     //             id: nanoid(),
@@ -579,10 +582,11 @@ export const getUIStateFromAIState = (aiState: Chat) => {
             ) : null
           })
         ) : message.role === 'user' ? (
-          <UserMessage>{
-            typeof message.content === 'string' 
-          ? message.content.replace(/\|\|\|[\s\S]*?\|\|\|/g, '') 
-          : ''}</UserMessage>
+          <UserMessage>
+            {typeof message.content === 'string'
+              ? message.content.replace(/\|\|\|[\s\S]*?\|\|\|/g, '')
+              : ''}
+          </UserMessage>
         ) : message.role === 'assistant' &&
           typeof message.content === 'string' ? (
           <BotMessage content={message.content} />
